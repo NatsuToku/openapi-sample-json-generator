@@ -1,0 +1,144 @@
+openapi: 3.0.0
+info:
+  title: "Book API"
+  version: "1.0"
+servers:
+  - url: "https://xxxxxx.com"
+paths:
+  /book:
+    get:
+      summary: Get book list
+      description: "Get book list"
+      responses:
+        200:
+          description: "List of books"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BookIndex"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    post:
+      summary: Create book
+      description: "Register new book information"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookIndex"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+  /book/{id}:
+    get:
+      summary: Get book detail
+      description: "Get book detail"
+      parameters:
+        - name: id
+          in: path
+          description: "unique key"
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "List of books"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookIndex"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+    delete:
+      summary: Delete book
+      description: "Delete a book registration"
+      parameters:
+        - name: id
+          in: path
+          description: "unique key"
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+
+components:
+  schemas:
+    Author:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "test"
+        age:
+          type: number
+          example: 30
+        gender:
+          type: string
+          example: "unknown"
+    Book:
+      type: object
+      required:
+        - title
+        - price
+        - authors
+      properties:
+        title:
+          type: string
+          example: "book title"
+        price:
+          type: number
+          example: 1500
+        authors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Author"
+        category:
+          type: "string"
+          description: "book category"
+          example: "horror"
+    BookIndex:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              description: "unique key"
+        - $ref: "#/components/schemas/Book"
+    BadRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: "error"
